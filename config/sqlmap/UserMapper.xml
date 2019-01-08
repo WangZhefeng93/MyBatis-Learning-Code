@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="test">
+    <insert id="insertUser" parameterType="User">
+        insert into user (username,password,gender,email,province,city,birthday) values (#{username},#{password},#{gender},#{email},#{province},#{city},#{birthday})
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            select @@identity
+        </selectKey>
+    </insert>
+    <insert id="insertUserCatchId" parameterType="User">
+        insert into user (username,password,gender,email,province,city,birthday) values (#{username},#{password},#{gender},#{email},#{province},#{city},#{birthday})
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            select @@identity
+        </selectKey>
+    </insert>
+    <delete id="deleteUserById" parameterType="int">
+        delete from user where id=#{id}
+    </delete>
+    <update id="updateUser" parameterType="User">
+        update user set username=#{username} where id=#{id}
+    </update>
+    <select id="findAllUserToList" resultType="User">
+        select * from user
+    </select>
+    <select id="findAllUserToMap" resultType="User">
+        select * from user
+    </select>
+    <select id="findAllUserToPageList" resultType="User">
+        select * from user
+    </select>
+    <select id="findUserById" parameterType="int" resultType="User">
+      select * from user where id=#{id}
+    </select>
+    <select id="findUserByName" parameterType="String" resultType="User">
+      select * from user where username like '%' #{username} '%'
+    </select>
+
+    <resultMap id="userMapper" type="User">
+        <result column="name" property="username"/>
+    </resultMap>
+
+    <select id="findUserByIdAlias" parameterType="int" resultType="User" resultMap="userMapper">
+      select * from user where id=#{id}
+    </select>
+    
+</mapper>

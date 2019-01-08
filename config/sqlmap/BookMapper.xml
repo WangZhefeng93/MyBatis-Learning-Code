@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccff.mybatis.dao.IBookDao">
+    <!--<cache eviction="FIFO" flushInterval="10800000" readOnly="true" size="512"/>-->
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache">
+        <property name="maxElementsInMemory" value="5000" />
+        <property name="timeToIdleSeconds" value="240" />
+    </cache>
+
+    <!--根据图书的id查询相应的图书信息-->
+    <select id="findBookById" parameterType="int" resultType="Book">
+        select * from book where id = #{id}
+    </select>
+    <select id="findBookById2" parameterType="int" resultType="Book" useCache="false">
+        select * from book where id = #{id}
+    </select>
+
+    <!--验证增删改操作会清空一级缓存：根据图书的id修改相应的图书信息-->
+    <update id="updateBookById" parameterType="Book" flushCache="false">
+        update book set number = #{number} where id = #{id}
+    </update>
+    
+</mapper>

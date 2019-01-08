@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--1、properties属性引入外部配置文件：注册DB连接四要素的属性文件-->
+    <properties resource="jdbc.properties" />
+
+    <!--2、全局参数设置-->
+    <settings>
+        <!-- 配置LOG信息 -->
+        <setting name="logImpl" value="LOG4J" />
+        <!-- 延迟加载总开关 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 侵入式延迟加载开关 -->
+        <setting name="aggressiveLazyLoading" value="true"/>
+        <!-- 关闭二级查询缓存 -->
+        <!--<setting name="cacheEnabled" value="false" />-->
+    </settings>
+
+    <!--3、配置别名-->
+    <typeAliases>
+        <package name="com.ccff.mybatis.model"/>
+    </typeAliases>
+
+    <!--4、配置类型转换器-->
+    <typeHandlers>
+        <!--一个简单类型转换器-->
+        <typeHandler handler="org.mybatis.example.ExampleTypeHandler" />
+        <!--自定义类型转换器-->
+        <typeHandler handler="com.ccff.mybatis.handler.DateTypeHandler" />
+    </typeHandlers>
+
+    <!--5、对象工厂-->
+    <objectFactory type="org.mybatis.example.ExampleObjectFactory">
+        <!--对象工厂注入的参数-->
+        <property name="someProperty" value="100" />
+    </objectFactory>
+
+    <!--6、插件-->
+    <plugins>
+        <plugin interceptor="com.ccff.mybatis.plugin.QueryPlugin">
+            <property name="someProperty" value="100" />
+        </plugin>
+    </plugins>
+
+    <!-- 7、environments数据库环境配置：和spring整合后 environments配置将废除-->
+    <environments default="development">
+        <environment id="development">
+            <!-- 使用jdbc事务管理-->
+            <transactionManager type="JDBC" />
+            <!-- 数据库连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--8、配置SQL映射文件的位置-->
+    <mappers>
+        <mapper resource="sqlmap/UserMapper.xml"/>
+        <mapper resource="sqlmap/StudentMapper.xml"/>
+        <mapper resource="sqlmap/BasketballPlayerMapper.xml"/>
+        <mapper resource="sqlmap/FinacialMapper.xml"/>
+        <mapper resource="sqlmap/NewsLabelMapper.xml" />
+        <mapper resource="sqlmap/LazyLoadingMapper.xml" />
+        <mapper resource="sqlmap/BookMapper.xml" />
+        <mapper resource="sqlmap/GoodsMapper.xml" />
+    </mappers>
+</configuration>

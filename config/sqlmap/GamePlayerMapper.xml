@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccff.mybatis.dao.IGamePlayerDao">
+    <resultMap id="GamePlayerResult" type="com.ccff.mybatis.model.GamePlayer">
+        <id property="id" column="id" />
+        <result property="username" column="name"/>
+        <result property="uGender" column="gender"/>
+        <result property="uLevel" column="level"/>
+        <association property="professionalAttributes" javaType="java.util.HashMap">
+            <discriminator javaType="int" column="profession_type">
+                <!--1战士-->
+                <case value="1" resultMap="warriorResult"/>
+                <!--2法师-->
+                <case value="2" resultMap="magicianResult"/>
+            </discriminator>
+        </association>
+    </resultMap>
+
+    <resultMap id="warriorResult" type="java.util.HashMap">
+        <!--剑气值-->
+        <result property="swordValue" column="sword_value"/>
+        <!--战斗力-->
+        <result property="fightingPower" column="fighting_power"/>
+    </resultMap>
+
+    <resultMap id="magicianResult" type="java.util.HashMap">
+        <!--法术范围-->
+        <result property="spellRange" column="spell_range"/>
+        <!--法强-->
+        <result property="spellPower" column="spell_power"/>
+    </resultMap>
+
+    <select id="queryWarriorGamePlayer" parameterType="int" resultMap="GamePlayerResult">
+		  select GP.id,GP.name,GP.gender,GP.level,
+	        GP.ptype as profession_type,
+	        W.svalue as sword_value,
+	        W.power as fighting_power
+		  from gameplayer GP LEFT JOIN warrior_info W on GP.id = W.gpid
+		  where GP.id = #{id}
+	</select>
+
+    <select id="queryMagicianGamePlayer" parameterType="int" resultMap="GamePlayerResult">
+		  select GP.id,GP.name,GP.gender,GP.level,
+	        GP.ptype as profession_type,
+	        M.range as spell_range,
+	        M.power as spell_power
+		  from gameplayer GP LEFT JOIN magician_info M on GP.id = M.gpid
+		  where GP.id = #{id}
+	</select>
+</mapper>

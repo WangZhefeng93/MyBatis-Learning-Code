@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccff.mybatis.dao.ICourseDao" >
+    <!--通过List结果集实现分页-->
+    <select id="getPageCourseByList" resultType="Course">
+        select * from course
+    </select>
+
+    <!--通过SQL参数实现分页-->
+    <select id="getPageCourseBySQL" parameterType="map" resultType="Course">
+        select * from course limit #{currIndex} , #{pageSize}
+    </select>
+
+    <!--通过RowBounds实现分页-->
+    <select id="getPageCourseByRowBounds" resultType="Course">
+        select * from course
+    </select>
+
+    <!--通过分页插件实现分页-->
+    <select id="getPageCorseByPagePlugin" resultType="Course">
+        select * from course
+    </select>
+</mapper>

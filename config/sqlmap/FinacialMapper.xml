@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ccff.mybatis.dao.IFinacialDao">
+
+    <!-- 一对多查询——多表连接查询方式 -->
+    <resultMap id="CustomerMapper" type="Customer">
+        <id column="cus_id" property="cus_id" />
+        <result column="username" property="username" />
+        <result column="acno" property="acno" />
+        <collection property="batches" ofType="Batch">
+            <id column="batch_id" property="batch_id" />
+            <result column="number" property="number" />
+            <result column="createtime" property="createtime" />
+            <result column="note" property="note" />
+        </collection>
+    </resultMap>
+    <select id="selectCustomerByIdUnion" resultMap="CustomerMapper">
+        select customer.cus_id,customer.username,customer.acno,batch.batch_id,batch.number,batch.createtime,batch.note
+        from customer,batch
+        where customer.cus_id = batch.cus_id and customer.cus_id = #{cus_id}
+    </select>
+
+    <!-- 一对多查询——多表单独查询方式 -->
+    <!--根据外键cus_id查询batch表-->
+    <select id="selectBatchByCustomerId" resultType="Batch">
+        select batch_id,number,createtime,note from batch where cus_id = #{cus_id}
+    </select>
+    <resultMap id="CustomerMapperAlone" type="Customer">
+        <id column="cus_id" property="cus_id" />
+        <result column="username" property="username" />
+        <result column="acno" property="acno" />
+        <!-- 关联属性的映射关系 -->
+        <!--集合的数据来自于指定的select查询，而该select查询的恭泰参数来自于column指定的字段值-->
+        <collection property="batches" ofType="Batch" select="selectBatchByCustomerId" column="cus_id" />
+    </resultMap>
+    <!--根据cus_id查询customer表-->
+    <select id="selectCustomerByIdAlone" resultMap="CustomerMapperAlone">
+        select cus_id,username,acno from customer where cus_id = #{cus_id}
+    </select>
+
+    <!-- 多对一查询——多表连接查询方式 -->
+    <resultMap id="BatchMapperUnion" type="Batch">
+        <id column="batch_id" property="batch_id" />
+        <result column="number" property="number" />
+        <result column="createtime" property="createtime" />
+        <result column="note" property="note" />
+        <association property="customer" javaType="Customer">
+            <id column="cus_id" property="cus_id" />
+            <result column="username" property="username" />
+            <result column="acno" property="acno" />
+            <result column="gender" property="gender" />
+            <result column="phone" property="phone" />
+        </association>
+    </resultMap>
+    <select id="selectAllBatchUnion" resultMap="BatchMapperUnion">
+        select batch.batch_id,batch.number,batch.createtime,batch.note,customer.cus_id,customer.username,customer.acno,customer.gender,customer.phone
+        from customer,batch
+        where customer.cus_id = batch.cus_id
+    </select>
+
+    <!-- 多对一查询——多表单独查询方式 -->
+    <select id="selectCustomer" resultType="Customer">
+        select cus_id,username,acno,gender,phone from customer where cus_id = #{cus_id}
+    </select>
+    <resultMap id="BatchMapperAlone" type="Batch">
+        <id column="batch_id" property="batch_id" />
+        <result column="number" property="number" />
+        <result column="createtime" property="createtime" />
+        <result column="note" property="note" />
+        <association property="customer" javaType="Customer" select="selectCustomer" column="cus_id" />
+    </resultMap>
+    <select id="selectAllBatchAlone" resultMap="BatchMapperAlone">
+        select batch_id,number,createtime,note,cus_id from batch
+    </select>
+
+    <!-- 多对多查询 -->
+    <resultMap id="FinacialProductMapper" type="FinacialProduct">
+        <id column="product_id" property="product_id" />
+        <result column="name" property="name" />
+        <result column="price" property="price" />
+        <result column="detail" property="detail" />
+        <result column="pic" property="pic" />
+        <result column="invasttime" property="invasttime" />
+        <collection property="batches" ofType="Batch">
+            <id column="batch_id" property="batch_id" />
+            <result column="number" property="number" />
+            <result column="createtime" property="createtime" />
+            <result column="note" property="note" />
+        </collection>
+    </resultMap>
+    <select id="selectAllFinacialProduct" resultMap="FinacialProductMapper">
+        select finacial_products.*,batch.* from finacial_products,batch,batchdetail
+        where finacial_products.product_id = batchdetail.product_id and batch.batch_id = batchdetail.batch_id
+    </select>
+
+</mapper>

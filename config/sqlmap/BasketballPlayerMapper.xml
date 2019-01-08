@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ccff.mybatis.dao.IBasketballPlayerDao">
+
+    <!--增加球员-->
+    <insert id="addBasketballPlayer" parameterType="BasketballPlayer">
+        insert into basketballplayer(name,age,weight,height,number,team,position)
+          values (#{name},#{age},#{weight},#{height},#{number},#{team},#{position})
+    </insert>
+
+    <!--根据id删除球员-->
+    <delete id="deleteBasketballPlayerById" parameterType="BasketballPlayer">
+        delete from basketballplayer where id = #{id}
+    </delete>
+
+    <!--根据id修改球员-->
+    <update id="updateBasketballPlayerById" parameterType="BasketballPlayer">
+        update basketballplayer set height = #{height} where id = #{id}
+    </update>
+
+    <!--根据id查询球员-->
+    <select id="selectBasketballPlayerById" resultType="BasketballPlayer">
+        select * from basketballplayer where id = #{id}
+    </select>
+
+    <!--查询所有球员-->
+    <select id="selectAllasketballPlayer" resultType="BasketballPlayer">
+        select * from basketballplayer
+    </select>
+
+    <!--查询所有球员并分页显示-->
+    <select id="selectAllBasketballPlayerPageList" resultType="BasketballPlayer">
+        select * from basketballplayer
+    </select>
+
+    <!--根据指定条件查询球员（演示多查询条件接收问题）-->
+    <select id="selectBasketballPlayerByConditionByMap" resultType="BasketballPlayer">
+        select * from basketballplayer where name like '%' #{nameCondition} '%' and age > #{ageCondition}
+    </select>
+    <select id="selectBasketballPlayerByConditionByIndex" resultType="BasketballPlayer">
+        select * from basketballplayer where name like '%' #{0} '%' and age > #{1}
+    </select>
+
+</mapper>

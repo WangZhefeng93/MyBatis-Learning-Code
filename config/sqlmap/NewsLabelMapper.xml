@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ccff.mybatis.dao.INewsLabelDao">
+    <!--以一对多方式处理：查询指定栏目的所有子孙栏目-->
+    <resultMap id="newsLabelMapper" type="NewsLabel">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <collection property="children" ofType="NewsLabel" select="selectChildrenByParentId" column="id" />
+    </resultMap>
+    <select id="selectChildrenByParentId" parameterType="int" resultMap="newsLabelMapper">
+        select id,name from newslabel where pid = #{pid}
+    </select>
+
+    <!--以一对多方式处理：查询指定栏目及其所有子孙栏目-->
+    <resultMap id="newsLabelMapper1" type="NewsLabel">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <collection property="children" ofType="NewsLabel" select="selectChildrenByParentId" column="id" />
+    </resultMap>
+    <select id="selectNewsLabelById" parameterType="int" resultMap="newsLabelMapper1">
+        select id,name from newslabel where id = #{id}
+    </select>
+
+    <!--以多对一方式处理：根据pid查询某一父栏目的全部信息-->
+    <resultMap id="newsLabelMapper2" type="NewsLabel">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <association property="parent" javaType="NewsLabel" select="selectParentByParentId" column="pid" />
+    </resultMap>
+    <select id="selectParentByParentId" parameterType="int" resultMap="newsLabelMapper2">
+        select id,name,pid from newslabel where id = #{pid}
+    </select>
+</mapper>
