@@ -1,5 +1,4 @@
 /*
-通过Navicat MySQL导出的整体项目所需的数据库文件
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
